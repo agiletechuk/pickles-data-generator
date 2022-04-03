@@ -6,8 +6,14 @@ public class IntegerSequence implements DataGenerator<Integer> {
     private final int end;
     private final int increment;
     private Integer current;
+    private LimitBehavior limitBehavior;
 
     IntegerSequence(int start, int end, int increment) {
+        this(start, end, increment, LimitBehavior.NULL);
+    }
+
+    IntegerSequence(int start, int end, int increment, LimitBehavior limitBehavior) {
+        this.limitBehavior = limitBehavior;
         if (!((start < end && increment > 0) || (start > end && increment < 0))) {
             throw new IllegalArgumentException("start must be before end for the given increment");
         }
@@ -19,15 +25,37 @@ public class IntegerSequence implements DataGenerator<Integer> {
 
     @Override
     public boolean hasNext() {
-        return (increment > 0 && current <= end)
-                || (increment < 0 && current >= end);
+        return current != null;
     }
 
 
     @Override
     public Integer next() {
-        int retval = current;
-        current += increment;
+        Integer retval = current;
+        if (current != null) {
+            current += increment;
+            if (positiveIncrement()) {
+                if (current > end) {
+                    current = switch (limitBehavior) {
+                        case LOOP -> current % (end - start + 1);
+                        case NULL -> null;
+                        case LAST_VALUE -> retval;
+                    };
+                }
+            } else {
+                if (current < end) {
+                    current = switch (limitBehavior) {
+                        case LOOP -> current % (start - end + 1);
+                        case NULL -> null;
+                        case LAST_VALUE -> retval;
+                    };
+                }
+            }
+        }
         return retval;
+    }
+
+    private boolean positiveIncrement() {
+        return increment > 0;
     }
 }

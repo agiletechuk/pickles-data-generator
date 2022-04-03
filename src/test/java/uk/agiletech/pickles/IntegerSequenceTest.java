@@ -21,6 +21,7 @@ class IntegerSequenceTest {
         assertTrue(integerSequence.hasNext());
         assertEquals(3, integerSequence.next());
         assertFalse(integerSequence.hasNext());
+        assertNull(integerSequence.next());
     }
 
 
@@ -34,6 +35,7 @@ class IntegerSequenceTest {
         assertTrue(integerSequence.hasNext());
         assertEquals(8, integerSequence.next());
         assertFalse(integerSequence.hasNext());
+        assertNull(integerSequence.next());
     }
 
     @Test
@@ -44,6 +46,7 @@ class IntegerSequenceTest {
         assertTrue(integerSequence.hasNext());
         assertEquals(8, integerSequence.next());
         assertFalse(integerSequence.hasNext());
+        assertNull(integerSequence.next());
     }
 
     @Test
@@ -54,6 +57,7 @@ class IntegerSequenceTest {
         assertTrue(integerSequence.hasNext());
         assertEquals(10, integerSequence.next());
         assertFalse(integerSequence.hasNext());
+        assertNull(integerSequence.next());
     }
 
     @Test
@@ -64,8 +68,8 @@ class IntegerSequenceTest {
         assertTrue(integerSequence.hasNext());
         assertEquals(10, integerSequence.next());
         assertFalse(integerSequence.hasNext());
+        assertNull(integerSequence.next());
     }
-
 
     @Test
     public void illegalArguments() {
@@ -77,5 +81,9 @@ class IntegerSequenceTest {
             integerSequence = new IntegerSequence(5, 10, -1);
         });
     }
+
+    /*
+     * Loop
+     */
 
 }

@@ -12,8 +12,34 @@ class ListValueGeneratorTest {
     List<Object> ITEMS = Arrays.asList("One", "Two", "Three");
 
     @Test
+    public void sequenceTest() {
+        ListValueGenerator<Object> t = new ListValueGenerator<>(ITEMS, LimitBehavior.NULL, false);
+        assertTrue(t.hasNext());
+        assertEquals("One",t.next());
+        assertTrue(t.hasNext());
+        assertEquals("Two",t.next());
+        assertTrue(t.hasNext());
+        assertEquals("Three",t.next());
+        assertFalse(t.hasNext());
+        assertNull(t.next());
+    }
+
+    @Test
+    public void loopTest() {
+        ListValueGenerator<Object> t = new ListValueGenerator<>(ITEMS, LimitBehavior.LOOP, false);
+        assertTrue(t.hasNext());
+        assertEquals("One",t.next());
+        assertTrue(t.hasNext());
+        assertEquals("Two",t.next());
+        assertTrue(t.hasNext());
+        assertEquals("Three",t.next());
+        assertTrue(t.hasNext());
+        assertEquals("One",t.next());
+    }
+
+    @Test
     public void randomTest() {
-        ListValueGenerator<Object> t = new ListValueGenerator<Object>(ITEMS, Behavior.RANDOM);
+        ListValueGenerator<Object> t = new ListValueGenerator<>(ITEMS, LimitBehavior.NULL, true);
         for (int j = 0; j < 10; j++) {
             assertTrue(t.hasNext());
             Object item = t.next();
@@ -26,7 +52,7 @@ class ListValueGeneratorTest {
     @Test
     public void performanceTest() {
         List<Integer> items = ThreadLocalRandom.current().ints(1000).boxed().collect(Collectors.toList());
-        ListValueGenerator<Integer> t = new ListValueGenerator<Integer>( items, Behavior.LOOP);
+        ListValueGenerator<Integer> t = new ListValueGenerator<Integer>( items, LimitBehavior.LOOP, true);
 
         long end = System.currentTimeMillis() + 1000;
         long count = 0;
