@@ -37,7 +37,7 @@ public class IntegerSequence implements DataGenerator<Integer> {
             if (positiveIncrement()) {
                 if (current > end) {
                     current = switch (limitBehavior) {
-                        case LOOP -> current % (end - start + 1);
+                        case LOOP -> start + ((current - start) % (end - start + 1));
                         case NULL -> null;
                         case LAST_VALUE -> retval;
                     };
@@ -45,7 +45,7 @@ public class IntegerSequence implements DataGenerator<Integer> {
             } else {
                 if (current < end) {
                     current = switch (limitBehavior) {
-                        case LOOP -> current % (start - end + 1);
+                        case LOOP -> start - ((start - current) % (start - end + 1));
                         case NULL -> null;
                         case LAST_VALUE -> retval;
                     };

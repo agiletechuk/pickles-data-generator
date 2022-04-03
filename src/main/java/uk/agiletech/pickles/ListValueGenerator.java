@@ -1,12 +1,9 @@
 package uk.agiletech.pickles;
 
-import org.apache.el.stream.Optional;
 import org.springframework.lang.NonNull;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-
-import static uk.agiletech.pickles.LimitBehavior.*;
 
 public class ListValueGenerator<T> implements DataGenerator<T> {
 
@@ -15,7 +12,7 @@ public class ListValueGenerator<T> implements DataGenerator<T> {
 
     ListValueGenerator(@NonNull List<T> values, @NonNull LimitBehavior limitBehavior, boolean random) {
         this.values = values;
-        this.indexGenerator = random ? new RandomIndex() : new IntegerSequence(0,values.size() - 1, 1, limitBehavior);
+        this.indexGenerator = random ? new RandomIndex() : new IntegerSequence(0, values.size() - 1, 1, limitBehavior);
     }
 
     @Override
@@ -43,7 +40,7 @@ public class ListValueGenerator<T> implements DataGenerator<T> {
 
         @Override
         public Integer next() {
-            return ThreadLocalRandom.current().nextInt(0,values.size());
+            return ThreadLocalRandom.current().nextInt(0, values.size());
         }
     }
 }
