@@ -21,26 +21,12 @@ public class ListValueGenerator<T> implements DataGenerator<T> {
     }
 
     @Override
-    public T next() {
-        Integer index = indexGenerator.next();
-        T retval;
-        if (index == null) {
-            retval = null;
-        } else {
-            retval = index == null ? null : values.get(index);
-        }
-        return retval;
+    public void next() {
+        indexGenerator.next();
     }
 
-    class RandomIndex implements DataGenerator<Integer> {
-        @Override
-        public boolean hasNext() {
-            return true;
-        }
-
-        @Override
-        public Integer next() {
-            return ThreadLocalRandom.current().nextInt(0, values.size());
-        }
+    @Override
+    public T getCurrentValue() {
+        return indexGenerator.getCurrentValue() == null ? null : values.get(indexGenerator.getCurrentValue());
     }
 }

@@ -36,7 +36,12 @@ public class JsonDataGenerator implements DataGenerator<Map<String, Object>> {
     }
 
     @Override
-    public Map<String,Object> next() {
+    public void next() {
+        // todo
+    }
+
+    @Override
+    public Map<String, Object> getCurrentValue() {
         return dataObject;
     }
 }

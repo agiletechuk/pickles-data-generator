@@ -32,7 +32,7 @@ class JsonDataGeneratorTest extends TestBase {
 
     public void test() {
         assertTrue(jsonDataGenerator.hasNext());
-        Map<String, Object> data = jsonDataGenerator.next();
+        Map<String, Object> data = jsonDataGenerator.getCurrentValue();
         assertEquals("stringVal", data.get("stringField"));
         assertEquals(42, data.get("intField"));
         assertEquals(123.456789, data.get("decimalField"));

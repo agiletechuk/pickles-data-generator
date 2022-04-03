@@ -17,27 +17,32 @@ class ListValueGeneratorTest {
     @Test
     public void sequenceTest() {
         ListValueGenerator<Object> t = new ListValueGenerator<>(ITEMS, LimitBehavior.NULL);
+        assertEquals("One", t.getCurrentValue());
         assertTrue(t.hasNext());
-        assertEquals("One", t.next());
+        t.next();
+        assertEquals("Two", t.getCurrentValue());
         assertTrue(t.hasNext());
-        assertEquals("Two", t.next());
+        t.next();
+        assertEquals("Three", t.getCurrentValue());
         assertTrue(t.hasNext());
-        assertEquals("Three", t.next());
+        t.next();
+        assertNull(t.getCurrentValue());
         assertFalse(t.hasNext());
-        assertNull(t.next());
     }
 
     @Test
     public void loopTest() {
         ListValueGenerator<Object> t = new ListValueGenerator<>(ITEMS, LimitBehavior.LOOP);
+        assertEquals("One", t.getCurrentValue());
         assertTrue(t.hasNext());
-        assertEquals("One", t.next());
+        t.next();
+        assertEquals("Two", t.getCurrentValue());
         assertTrue(t.hasNext());
-        assertEquals("Two", t.next());
+        t.next();
+        assertEquals("Three", t.getCurrentValue());
         assertTrue(t.hasNext());
-        assertEquals("Three", t.next());
-        assertTrue(t.hasNext());
-        assertEquals("One", t.next());
+        t.next();
+        assertEquals("One", t.getCurrentValue());
     }
 
     @Test
@@ -46,7 +51,8 @@ class ListValueGeneratorTest {
         ListValueGenerator<Object> t = new ListValueGenerator<>(ITEMS, LimitBehavior.RANDOM);
         for (int j = 0; j < 100; j++) {
             assertTrue(t.hasNext());
-            Object item = t.next();
+            t.next();
+            Object item = t.getCurrentValue();
             checkin(item, ITEMS);
         }
 
@@ -66,7 +72,8 @@ class ListValueGeneratorTest {
         long count = 0;
         while (System.currentTimeMillis() < end) {
             assertTrue(t.hasNext());
-            Integer item = t.next();
+            t.next();
+            Integer item = t.getCurrentValue();
             checkin(item, items);
             if (count < 5) System.out.println("Item: " + item);
             count++;

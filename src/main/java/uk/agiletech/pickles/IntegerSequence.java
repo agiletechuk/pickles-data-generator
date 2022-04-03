@@ -31,8 +31,8 @@ public class IntegerSequence implements DataGenerator<Integer> {
     }
 
     @Override
-    public Integer next() {
-        Integer retval = current;
+    public void next() {
+        Integer previous = current;
         if (limitBehavior == LimitBehavior.RANDOM) {
             current = randomInt();
         } else if (current != null) {
@@ -41,7 +41,7 @@ public class IntegerSequence implements DataGenerator<Integer> {
                 if (current > end) {
                     current = switch (limitBehavior) {
                         case NULL -> null;
-                        case LAST_VALUE -> retval;
+                        case LAST_VALUE -> previous;
                         default -> start + ((current - start) % (end - start + 1));
                     };
                 }
@@ -49,13 +49,17 @@ public class IntegerSequence implements DataGenerator<Integer> {
                 if (current < end) {
                     current = switch (limitBehavior) {
                         case NULL -> null;
-                        case LAST_VALUE -> retval;
+                        case LAST_VALUE -> previous;
                         default -> start - ((start - current) % (start - end + 1));
                     };
                 }
             }
         }
-        return retval;
+    }
+
+    @Override
+    public Integer getCurrentValue() {
+        return current;
     }
 
     private boolean positiveIncrement() {
