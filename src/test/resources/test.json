@@ -1,0 +1,8 @@
+{
+  "stringField" : "stringVal",
+  "intField" : 42,
+  "decimalField" : 123.456789,
+  "booleanField" : true,
+  "list" : [ 5,4,3,2,1 ],
+  "objectField" : { "f1" : 32, "f2" :  false }
+}
