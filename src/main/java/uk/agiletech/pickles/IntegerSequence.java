@@ -1,5 +1,7 @@
 package uk.agiletech.pickles;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 public class IntegerSequence implements DataGenerator<Integer> {
 
     private final int start;
@@ -28,26 +30,27 @@ public class IntegerSequence implements DataGenerator<Integer> {
         return current != null;
     }
 
-
     @Override
     public Integer next() {
         Integer retval = current;
-        if (current != null) {
+        if (limitBehavior == LimitBehavior.RANDOM) {
+            current = randomInt();
+        } else if (current != null) {
             current += increment;
             if (positiveIncrement()) {
                 if (current > end) {
                     current = switch (limitBehavior) {
-                        case LOOP -> start + ((current - start) % (end - start + 1));
                         case NULL -> null;
                         case LAST_VALUE -> retval;
+                        default -> start + ((current - start) % (end - start + 1));
                     };
                 }
             } else {
                 if (current < end) {
                     current = switch (limitBehavior) {
-                        case LOOP -> start - ((start - current) % (start - end + 1));
                         case NULL -> null;
                         case LAST_VALUE -> retval;
+                        default -> start - ((start - current) % (start - end + 1));
                     };
                 }
             }
@@ -57,5 +60,9 @@ public class IntegerSequence implements DataGenerator<Integer> {
 
     private boolean positiveIncrement() {
         return increment > 0;
+    }
+
+    private int randomInt() {
+        return ThreadLocalRandom.current().nextInt(start, end + 1);
     }
 }

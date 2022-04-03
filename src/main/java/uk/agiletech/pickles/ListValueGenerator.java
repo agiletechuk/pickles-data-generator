@@ -10,9 +10,9 @@ public class ListValueGenerator<T> implements DataGenerator<T> {
     protected List<T> values;
     private DataGenerator<Integer> indexGenerator;
 
-    ListValueGenerator(@NonNull List<T> values, @NonNull LimitBehavior limitBehavior, boolean random) {
+    ListValueGenerator(@NonNull List<T> values, @NonNull LimitBehavior limitBehavior) {
         this.values = values;
-        this.indexGenerator = random ? new RandomIndex() : new IntegerSequence(0, values.size() - 1, 1, limitBehavior);
+        this.indexGenerator = new IntegerSequence(0, values.size() - 1, 1, limitBehavior);
     }
 
     @Override
