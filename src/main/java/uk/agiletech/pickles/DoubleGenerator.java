@@ -2,19 +2,32 @@ package uk.agiletech.pickles;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class IntegerSequence implements DataGenerator<Integer> {
+public class DoubleGenerator implements DataGenerator<Double> {
 
-    private final int start;
-    private final int end;
-    private final int increment;
-    private Integer current;
-    private LimitBehavior limitBehavior;
+    private final double start;
+    private final double end;
+    private final double increment;
+    private final LimitBehavior limitBehavior;
+    private Double current;
 
-    IntegerSequence(int start, int end, int increment) {
+    /**
+     *
+     * @param start
+     * @param end
+     * @param increment
+     */
+    DoubleGenerator(double start, double end, double increment) {
         this(start, end, increment, LimitBehavior.NULL);
     }
 
-    IntegerSequence(int start, int end, int increment, LimitBehavior limitBehavior) {
+    /**
+     *
+     * @param start
+     * @param end
+     * @param increment
+     * @param limitBehavior
+     */
+    DoubleGenerator(double start, double end, double increment, LimitBehavior limitBehavior) {
         this.limitBehavior = limitBehavior;
         if (!((start < end && increment > 0) || (start > end && increment < 0))) {
             throw new IllegalArgumentException("start must be before end for the given increment");
@@ -26,15 +39,15 @@ public class IntegerSequence implements DataGenerator<Integer> {
     }
 
     @Override
-    public boolean hasNext() {
-        return current != null;
+    public boolean end() {
+        return current == null;
     }
 
     @Override
     public void next() {
-        Integer previous = current;
+        Double previous = current;
         if (limitBehavior == LimitBehavior.RANDOM) {
-            current = randomInt();
+            current = randomDouble();
         } else if (current != null) {
             current += increment;
             if (positiveIncrement()) {
@@ -42,7 +55,7 @@ public class IntegerSequence implements DataGenerator<Integer> {
                     current = switch (limitBehavior) {
                         case NULL -> null;
                         case LAST_VALUE -> previous;
-                        default -> start + ((current - start) % (end - start + 1));
+                        default -> start + ((current - start) % (end - start));
                     };
                 }
             } else {
@@ -50,7 +63,7 @@ public class IntegerSequence implements DataGenerator<Integer> {
                     current = switch (limitBehavior) {
                         case NULL -> null;
                         case LAST_VALUE -> previous;
-                        default -> start - ((start - current) % (start - end + 1));
+                        default -> start - ((start - current) % (start - end));
                     };
                 }
             }
@@ -58,7 +71,7 @@ public class IntegerSequence implements DataGenerator<Integer> {
     }
 
     @Override
-    public Integer getCurrentValue() {
+    public Double getCurrentValue() {
         return current;
     }
 
@@ -66,7 +79,7 @@ public class IntegerSequence implements DataGenerator<Integer> {
         return increment > 0;
     }
 
-    private int randomInt() {
-        return ThreadLocalRandom.current().nextInt(start, end + 1);
+    private double randomDouble() {
+        return ThreadLocalRandom.current().nextDouble(start, end);
     }
 }

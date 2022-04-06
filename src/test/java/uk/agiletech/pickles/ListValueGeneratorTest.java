@@ -18,29 +18,29 @@ class ListValueGeneratorTest {
     public void sequenceTest() {
         ListValueGenerator<Object> t = new ListValueGenerator<>(ITEMS, LimitBehavior.NULL);
         assertEquals("One", t.getCurrentValue());
-        assertTrue(t.hasNext());
+        assertFalse(t.end());
         t.next();
         assertEquals("Two", t.getCurrentValue());
-        assertTrue(t.hasNext());
+        assertFalse(t.end());
         t.next();
         assertEquals("Three", t.getCurrentValue());
-        assertTrue(t.hasNext());
+        assertFalse(t.end());
         t.next();
         assertNull(t.getCurrentValue());
-        assertFalse(t.hasNext());
+        assertTrue(t.end());
     }
 
     @Test
     public void loopTest() {
         ListValueGenerator<Object> t = new ListValueGenerator<>(ITEMS, LimitBehavior.LOOP);
         assertEquals("One", t.getCurrentValue());
-        assertTrue(t.hasNext());
+        assertFalse(t.end());
         t.next();
         assertEquals("Two", t.getCurrentValue());
-        assertTrue(t.hasNext());
+        assertFalse(t.end());
         t.next();
         assertEquals("Three", t.getCurrentValue());
-        assertTrue(t.hasNext());
+        assertFalse(t.end());
         t.next();
         assertEquals("One", t.getCurrentValue());
     }
@@ -50,7 +50,7 @@ class ListValueGeneratorTest {
         valueMap = new HashMap<Object, Integer>();
         ListValueGenerator<Object> t = new ListValueGenerator<>(ITEMS, LimitBehavior.RANDOM);
         for (int j = 0; j < 100; j++) {
-            assertTrue(t.hasNext());
+            assertFalse(t.end());
             t.next();
             Object item = t.getCurrentValue();
             checkin(item, ITEMS);
@@ -71,15 +71,15 @@ class ListValueGeneratorTest {
         long end = System.currentTimeMillis() + 1000;
         long count = 0;
         while (System.currentTimeMillis() < end) {
-            assertTrue(t.hasNext());
-            t.next();
             Integer item = t.getCurrentValue();
             checkin(item, items);
             if (count < 5) System.out.println("Item: " + item);
             count++;
+            assertFalse(t.end());
+            t.next();
         }
         System.out.format("%,d messages in one second\n", count);
-        assertTrue(count > 3000000);
+        assertTrue(count > 2000000);
     }
 
     Map<Object, Integer> valueMap = new HashMap<Object, Integer>();

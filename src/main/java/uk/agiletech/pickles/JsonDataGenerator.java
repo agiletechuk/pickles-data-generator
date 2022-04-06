@@ -31,7 +31,7 @@ public class JsonDataGenerator implements DataGenerator<Map<String, Object>> {
     }
 
     @Override
-    public boolean hasNext() {
+    public boolean end() {
         return true;
     }
 

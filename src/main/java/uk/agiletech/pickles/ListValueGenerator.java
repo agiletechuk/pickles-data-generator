@@ -3,7 +3,6 @@ package uk.agiletech.pickles;
 import org.springframework.lang.NonNull;
 
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class ListValueGenerator<T> implements DataGenerator<T> {
 
@@ -12,12 +11,12 @@ public class ListValueGenerator<T> implements DataGenerator<T> {
 
     ListValueGenerator(@NonNull List<T> values, @NonNull LimitBehavior limitBehavior) {
         this.values = values;
-        this.indexGenerator = new IntegerSequence(0, values.size() - 1, 1, limitBehavior);
+        this.indexGenerator = new IntegerGenerator(0, values.size() - 1, 1, limitBehavior);
     }
 
     @Override
-    public boolean hasNext() {
-        return indexGenerator.hasNext();
+    public boolean end() {
+        return indexGenerator.end();
     }
 
     @Override

@@ -1,7 +1,7 @@
 package uk.agiletech.pickles;
 
 public interface DataGenerator<T> {
-    boolean hasNext();
+    boolean end();
     void next();
     T getCurrentValue();
 }

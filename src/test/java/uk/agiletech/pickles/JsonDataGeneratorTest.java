@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class JsonDataGeneratorTest extends TestBase {
     private static final String JSON_FILE = "test.json";
     private static final Context CONTEXT = null;
-    private static final Map<String, FieldFormat> FIELDMAP = null;
+    private static final Map<String, FieldFormat> FIELDMAP = Collections.emptyMap();
 
     JsonDataGenerator jsonDataGenerator;
 
@@ -31,7 +32,6 @@ class JsonDataGeneratorTest extends TestBase {
     }
 
     public void test() {
-        assertTrue(jsonDataGenerator.hasNext());
         Map<String, Object> data = jsonDataGenerator.getCurrentValue();
         assertEquals("stringVal", data.get("stringField"));
         assertEquals(42, data.get("intField"));
@@ -40,6 +40,7 @@ class JsonDataGeneratorTest extends TestBase {
         Map<String, Object> subObject = (Map) data.get("objectField");
         assertEquals(32, subObject.get("f1"));
         assertEquals(false, subObject.get("f2"));
+        assertTrue(jsonDataGenerator.end());
     }
 
 }
