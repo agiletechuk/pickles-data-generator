@@ -1,20 +1,21 @@
 package uk.agiletech.pickles;
 
 import org.junit.jupiter.api.Test;
+import uk.agiletech.pickles.data.DoubleData;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class DoubleGeneratorTest {
-    DoubleGenerator doubleGenerator;
+    DoubleData doubleGenerator;
 
     @Test
     public void test() {
-        doubleGenerator = new DoubleGenerator(0.1d, 0.3d, 0.1d);
-        assertEquals(0.1d,doubleGenerator.getCurrentValue());
+        doubleGenerator = new DoubleData(0.1d, 0.3d, 0.1d);
+        assertEquals(0.1d,doubleGenerator.getValue());
         doubleGenerator.next();
-        assertEquals(0.2d,doubleGenerator.getCurrentValue());
+        assertEquals(0.2d,doubleGenerator.getValue());
         doubleGenerator.next();
-        assertEquals(null,doubleGenerator.getCurrentValue());
-        assertTrue(doubleGenerator.end());
+        assertEquals(null,doubleGenerator.getValue());
+        assertTrue(doubleGenerator.endSequence());
     }
 }

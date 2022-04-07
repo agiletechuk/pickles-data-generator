@@ -1,6 +1,8 @@
 package uk.agiletech.pickles;
 
 import org.junit.jupiter.api.Test;
+import uk.agiletech.pickles.data.LimitBehavior;
+import uk.agiletech.pickles.data.ListValueData;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -11,48 +13,48 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ListValueGeneratorTest {
+class ListValueDataTest {
     List<Object> ITEMS = Arrays.asList("One", "Two", "Three");
 
     @Test
     public void sequenceTest() {
-        ListValueGenerator<Object> t = new ListValueGenerator<>(ITEMS, LimitBehavior.NULL);
-        assertEquals("One", t.getCurrentValue());
-        assertFalse(t.end());
+        ListValueData<Object> t = new ListValueData<>(ITEMS, LimitBehavior.NULL);
+        assertEquals("One", t.getValue());
+        assertFalse(t.endSequence());
         t.next();
-        assertEquals("Two", t.getCurrentValue());
-        assertFalse(t.end());
+        assertEquals("Two", t.getValue());
+        assertFalse(t.endSequence());
         t.next();
-        assertEquals("Three", t.getCurrentValue());
-        assertFalse(t.end());
+        assertEquals("Three", t.getValue());
+        assertFalse(t.endSequence());
         t.next();
-        assertNull(t.getCurrentValue());
-        assertTrue(t.end());
+        assertNull(t.getValue());
+        assertTrue(t.endSequence());
     }
 
     @Test
     public void loopTest() {
-        ListValueGenerator<Object> t = new ListValueGenerator<>(ITEMS, LimitBehavior.LOOP);
-        assertEquals("One", t.getCurrentValue());
-        assertFalse(t.end());
+        ListValueData<Object> t = new ListValueData<>(ITEMS, LimitBehavior.LOOP);
+        assertEquals("One", t.getValue());
+        assertFalse(t.endSequence());
         t.next();
-        assertEquals("Two", t.getCurrentValue());
-        assertFalse(t.end());
+        assertEquals("Two", t.getValue());
+        assertFalse(t.endSequence());
         t.next();
-        assertEquals("Three", t.getCurrentValue());
-        assertFalse(t.end());
+        assertEquals("Three", t.getValue());
+        assertFalse(t.endSequence());
         t.next();
-        assertEquals("One", t.getCurrentValue());
+        assertEquals("One", t.getValue());
     }
 
     @Test
     public void randomTest() {
         valueMap = new HashMap<Object, Integer>();
-        ListValueGenerator<Object> t = new ListValueGenerator<>(ITEMS, LimitBehavior.RANDOM);
+        ListValueData<Object> t = new ListValueData<>(ITEMS, LimitBehavior.RANDOM);
         for (int j = 0; j < 100; j++) {
-            assertFalse(t.end());
+            assertFalse(t.endSequence());
             t.next();
-            Object item = t.getCurrentValue();
+            Object item = t.getValue();
             checkin(item, ITEMS);
         }
 
@@ -65,21 +67,21 @@ class ListValueGeneratorTest {
     @Test
     public void performanceTest() {
         List<Integer> items = ThreadLocalRandom.current().ints(1000).boxed().collect(Collectors.toList());
-        ListValueGenerator<Integer> t = new ListValueGenerator<>(items, LimitBehavior.RANDOM);
+        ListValueData<Integer> t = new ListValueData<>(items, LimitBehavior.RANDOM);
         valueMap = new HashMap<Object, Integer>();
 
         long end = System.currentTimeMillis() + 1000;
         long count = 0;
         while (System.currentTimeMillis() < end) {
-            Integer item = t.getCurrentValue();
+            Integer item = t.getValue();
             checkin(item, items);
             if (count < 5) System.out.println("Item: " + item);
             count++;
-            assertFalse(t.end());
+            assertFalse(t.endSequence());
             t.next();
         }
         System.out.format("%,d messages in one second\n", count);
-        assertTrue(count > 2000000);
+        assertTrue(count > 1000000);
     }
 
     Map<Object, Integer> valueMap = new HashMap<Object, Integer>();

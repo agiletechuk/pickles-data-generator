@@ -1,6 +1,8 @@
 package uk.agiletech.pickles;
 
 import org.junit.jupiter.api.Test;
+import uk.agiletech.pickles.format.Format;
+import uk.agiletech.pickles.format.JsonFormat;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,26 +15,25 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class JsonDataGeneratorTest extends TestBase {
     private static final String JSON_FILE = "test.json";
-    private static final Context CONTEXT = null;
-    private static final Map<String, FieldFormat> FIELDMAP = Collections.emptyMap();
+    private static final Map<String, Format> FIELDMAP = Collections.emptyMap();
 
-    JsonDataGenerator jsonDataGenerator;
+    JsonFormat jsonDataGenerator;
 
     @Test
     public void testString() throws IOException {
         String json = new String(Files.readAllBytes(Paths.get(getFile(JSON_FILE).getPath())));
-        jsonDataGenerator = new JsonDataGenerator(CONTEXT, FIELDMAP, json);
+        jsonDataGenerator = new JsonFormat(FIELDMAP, json);
         test();
     }
 
     @Test
     public void testFile() throws IOException {
-        jsonDataGenerator = new JsonDataGenerator(CONTEXT, FIELDMAP, getFile(JSON_FILE));
+        jsonDataGenerator = new JsonFormat(FIELDMAP, getFile(JSON_FILE));
         test();
     }
 
     public void test() {
-        Map<String, Object> data = jsonDataGenerator.getCurrentValue();
+        Map<String, Object> data = jsonDataGenerator.getValue();
         assertEquals("stringVal", data.get("stringField"));
         assertEquals(42, data.get("intField"));
         assertEquals(123.456789, data.get("decimalField"));
@@ -40,7 +41,6 @@ class JsonDataGeneratorTest extends TestBase {
         Map<String, Object> subObject = (Map) data.get("objectField");
         assertEquals(32, subObject.get("f1"));
         assertEquals(false, subObject.get("f2"));
-        assertTrue(jsonDataGenerator.end());
     }
 
 }
