@@ -1,4 +1,4 @@
-package uk.agiletech.pickles;
+package uk.agiletech.pickles.data;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

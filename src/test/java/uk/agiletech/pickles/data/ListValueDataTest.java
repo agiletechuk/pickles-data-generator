@@ -1,4 +1,4 @@
-package uk.agiletech.pickles;
+package uk.agiletech.pickles.data;
 
 import org.junit.jupiter.api.Test;
 import uk.agiletech.pickles.data.LimitBehavior;
@@ -49,7 +49,7 @@ class ListValueDataTest {
 
     @Test
     public void randomTest() {
-        valueMap = new HashMap<Object, Integer>();
+        valueMap = new HashMap<>();
         ListValueData<Object> t = new ListValueData<>(ITEMS, LimitBehavior.RANDOM);
         for (int j = 0; j < 100; j++) {
             assertFalse(t.endSequence());

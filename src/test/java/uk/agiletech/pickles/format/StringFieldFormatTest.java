@@ -1,4 +1,4 @@
-package uk.agiletech.pickles;
+package uk.agiletech.pickles.format;
 
 import org.junit.jupiter.api.Test;
 import uk.agiletech.pickles.data.IntegerData;

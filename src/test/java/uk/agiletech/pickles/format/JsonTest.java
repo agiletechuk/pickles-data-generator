@@ -1,4 +1,4 @@
-package uk.agiletech.pickles;
+package uk.agiletech.pickles.format;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
