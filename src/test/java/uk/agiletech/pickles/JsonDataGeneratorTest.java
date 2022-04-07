@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class JsonDataGeneratorTest extends TestBase {
     private static final String JSON_FILE = "test.json";
-    private static final Map<String, Format> FIELDMAP = Collections.emptyMap();
+    private static final Map<String, Format<?>> FIELDMAP = Collections.emptyMap();
 
     JsonFormat jsonDataGenerator;
 
