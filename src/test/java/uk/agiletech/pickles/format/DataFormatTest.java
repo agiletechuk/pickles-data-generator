@@ -88,12 +88,12 @@ public class DataFormatTest {
             count++;
         }
         System.out.printf("DataFormat performance %,d messages in 1 seconds%n",count);
-        assertThat(count,is(greaterThan(800000L)));
+        assertThat(count,is(greaterThan(500000L)));
     }
 
 
     private void testList() {
-        List<Map<String,Object>> data = (List<Map<String, Object>>) dataFormatList.getValue();
+        List<Map<String,Object>> data = (List<Map<String,Object>>) dataFormatList.getValue();
         assertThat(data.get(0).get("name"), equalTo("bob"));
         assertThat(data.get(1).get("name"), equalTo("jim"));
         assertThat(data.get(2).get("name"), equalTo("john"));
@@ -105,7 +105,7 @@ public class DataFormatTest {
         assertEquals(val1, data.get("intField"));
         assertEquals(123.456789, data.get("decimalField"));
         assertArrayEquals(new Object[]{5, 4, 3, 2, 1}, ((List<?>) data.get("list")).toArray());
-        Map<String, Object> subObject = (Map<String,Object>) data.get("objectField");
+        Map<String, Object> subObject = (Map<String, Object>) data.get("objectField");
         assertEquals(val2, subObject.get("f1"));
         assertEquals(false, subObject.get("f2"));
     }
