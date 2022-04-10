@@ -8,8 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class UUIDDataTest {
 
-    private UUIDData sut = new UUIDData();
-    ;
+    private final UUIDData sut = new UUIDData();
 
     @Test
     public void testType() {
@@ -29,7 +28,6 @@ class UUIDDataTest {
         assertNotNull(v1);
         assertNotNull(v2);
     }
-
 
     @Test
     public void testConsecutiveGetValuesDifferentAfterNext() {

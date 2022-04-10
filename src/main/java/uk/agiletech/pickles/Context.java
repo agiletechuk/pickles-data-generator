@@ -8,7 +8,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
-public interface Context extends Generator {
+public interface Context {
     // Provides list of all Format and Data objects mapped to a unique name
     Map<String, Format<?>> formats();
 
@@ -19,8 +19,8 @@ public interface Context extends Generator {
 
     List<Monitor> monitors();
 
-    void add(String name, Format format);
-    void add(String name, Data data, String group);
+    void add(String name, Format<?> format);
+    void add(String name, Data<?> data, String group);
     void add(Generator generator, String group);
 }
 

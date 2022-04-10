@@ -1,35 +1,28 @@
 package uk.agiletech.pickles.format;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.File;
+import java.awt.*;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Map;
 
-public class JsonFormat implements Format<Map<String, Object>> {
+public class JsonFormat implements Format<String> {
 
-    private Map<String, Format<?>> generatedFields;
-    private Map<String, Object> dataObject;
+    final private static ObjectMapper objectMapper = new ObjectMapper();
+    private final Format<?> source;
 
-    public JsonFormat(Map<String, Format<?>> generatedFields, String jsonString) throws JsonProcessingException {
-        this(generatedFields, new ObjectMapper().readValue(jsonString, new TypeReference<Map<String, Object>>() {
-        }));
-    }
-
-    public JsonFormat(Map<String, Format<?>> generatedFields, File jsonFile) throws IOException {
-        this(generatedFields, new ObjectMapper().readValue(jsonFile, new TypeReference<Map<String, Object>>() {
-        }));
-    }
-
-    public JsonFormat(Map<String, Format<?>> generatedFields, Map<String, Object> dataObject) {
-        this.generatedFields = generatedFields;
-        this.dataObject = dataObject;
+    public JsonFormat(Format<?> source) {
+        this.source = source;
     }
 
     @Override
-    public Map<String, Object> getValue() {
-        return dataObject;
+    public String getValue() {
+        final ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        try {
+            objectMapper.writer().writeValue(bos, source.getValue());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return bos.toString();
     }
 }

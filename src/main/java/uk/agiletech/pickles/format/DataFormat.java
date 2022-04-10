@@ -1,0 +1,110 @@
+package uk.agiletech.pickles.format;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
+public class DataFormat<T> implements Format<T> {
+
+    private final Map<String, Format<?>> generatedFields;
+    private final T dataObject;
+
+    public DataFormat(Map<String, Format<?>> generatedFields, String jsonString) throws JsonProcessingException {
+        this(generatedFields, new ObjectMapper().readValue(jsonString, new TypeReference<T>() {
+        }));
+    }
+
+    public DataFormat(Map<String, Format<?>> generatedFields, File jsonFile) throws IOException {
+        this(generatedFields, new ObjectMapper().readValue(jsonFile, new TypeReference<T>() {
+        }));
+    }
+
+    public DataFormat(Map<String, Format<?>> generatedFields, T dataObject) {
+        this.generatedFields = generatedFields;
+        this.dataObject = dataObject;
+    }
+
+    private void applyGeneraatedFields() {
+        for (Map.Entry<String, Format<?>> entry : generatedFields.entrySet()) {
+            applyGeneraatedField(dataObject, entry.getKey(), entry.getValue(), 0);
+        }
+    }
+
+    private void applyGeneraatedField(Object dataObject, String key, Format<?> format, int pos) {
+        String[] fields = key.split("\\.");
+        if (fields.length == 0) {
+            throw new RuntimeException("key has no fields");
+        } else {
+            String[] subFields = fields[0].split("\\[");
+            if (subFields[0].length() > 0) {
+                if (dataObject instanceof Map) {
+                    // subfield[0] is a field in a map
+                    processMap((Map<String, Object>) dataObject, key, format, pos, fields, subFields);
+                } else {
+                    // data object is not a Map
+                }
+            } else {
+                // subfield[1] contains an index to get from a list'
+                processList((List<Object>) dataObject, key, format, pos, fields, subFields);
+            }
+        }
+    }
+
+    private void processList(List<Object> dataObject, String key, Format<?> format, int pos, String[] fields, String[] subFields) {
+        int endIndex = subFields[1].indexOf(']');
+        if (endIndex == -1) {
+            throw new RuntimeException("missing ']' at position " + pos + subFields[0].length());
+        } else {
+            String arrayIndexString = subFields[1].substring(0,endIndex);
+            int arrayIndex = Integer.parseInt(arrayIndexString);
+
+            if (fields.length > 1 || subFields.length > 2) {
+                // apply in subobject
+                applyGeneraatedField(
+                        dataObject.get(arrayIndex),
+                        key.substring(subFields[1].length() + 1),
+                        format,
+                        pos + subFields[1].length() + 1
+                );
+            } else {
+                addFormatToList(dataObject, arrayIndex, format);
+            }
+        }
+    }
+
+    private void processMap(Map<String,Object> dataObject, String key, Format<?> format, int pos, String[] fields, String[] subFields) {
+        if (fields.length > 1 || subFields.length > 1) {
+            // apply in subobject
+            applyGeneraatedField(
+                    dataObject.get(subFields[0]),
+                    key.substring(subFields[0].length() +
+                            (subFields.length == 1 ? 1 : 0)),
+                    format,
+                    pos + subFields[0].length() +
+                            (subFields.length == 1 ? 1 : 0)
+            );
+        } else {
+            // replace the field value with a format
+            addFormatToMap(dataObject, subFields[0], format);
+        }
+    }
+
+    private void addFormatToMap(Map<String,Object> dataObject, String field, Format<?> format) {
+        dataObject.put(field, format.getValue());
+    }
+
+    private void addFormatToList(List<Object> dataObject, int arrayIndex, Format<?> format) {
+        dataObject.set(arrayIndex, format.getValue());
+    }
+
+    @Override
+    public T getValue() {
+        applyGeneraatedFields();
+        return dataObject;
+    }
+}

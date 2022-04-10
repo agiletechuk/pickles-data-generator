@@ -20,6 +20,10 @@ public class UUIDData implements Data<UUID> {
     }
 
     @Override
+    public void reset() {
+    }
+
+    @Override
     public UUID getValue() {
         return current;
     }

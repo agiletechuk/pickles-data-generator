@@ -12,9 +12,9 @@ public class DoubleData implements Data<Double> {
 
     /**
      *
-     * @param start
-     * @param end
-     * @param increment
+     * @param start     value to start with
+     * @param end       value limit to end with
+     * @param increment value to increment by or decrement if -ve
      */
     public DoubleData(double start, double end, double increment) {
         this(start, end, increment, LimitBehavior.NULL);
@@ -22,10 +22,13 @@ public class DoubleData implements Data<Double> {
 
     /**
      *
-     * @param start
-     * @param end
-     * @param increment
-     * @param limitBehavior
+     * @param start             value to start with
+     * @param end               value limit to end with
+     * @param increment         value to increment by or decrement if -ve
+     * @param limitBehavior     defines the behaviour at when end is reached.
+     *                          - NULL: Gives null at the end.
+     *                          - LOOP: wraps to the start and goes through sequence again
+     *                          - LAST_VALUE: Gives continuously the final value at the end
      */
     DoubleData(double start, double end, double increment, LimitBehavior limitBehavior) {
         this.limitBehavior = limitBehavior;
@@ -68,6 +71,11 @@ public class DoubleData implements Data<Double> {
                 }
             }
         }
+    }
+
+    @Override
+    public void reset() {
+        current = start;
     }
 
     @Override

@@ -5,11 +5,11 @@ import java.io.File;
 import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TestBase {
+public class TestHelper {
 
-    public File getFile(String fileName) {
+    public static File getFile(String fileName) {
         requireNonNull(fileName);
-        var classLoader = this.getClass().getClassLoader();
+        var classLoader = TestHelper.class.getClassLoader();
         var file = new File(requireNonNull(classLoader.getResource("test.json")).getFile());
         assertTrue(file.exists());
         return file;

@@ -7,7 +7,7 @@ import java.util.List;
 public class ListValueData<T> implements Data<T> {
 
     protected List<T> values;
-    private Data<Integer> indexGenerator;
+    private final Data<Integer> indexGenerator;
 
     public ListValueData(@NonNull List<T> values, @NonNull LimitBehavior limitBehavior) {
         this.values = values;
@@ -22,6 +22,11 @@ public class ListValueData<T> implements Data<T> {
     @Override
     public void next() {
         indexGenerator.next();
+    }
+
+    @Override
+    public void reset() {
+        indexGenerator.reset();
     }
 
     @Override

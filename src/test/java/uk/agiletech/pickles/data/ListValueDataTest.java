@@ -1,8 +1,7 @@
 package uk.agiletech.pickles.data;
 
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import uk.agiletech.pickles.data.LimitBehavior;
-import uk.agiletech.pickles.data.ListValueData;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -11,6 +10,8 @@ import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ListValueDataTest {
@@ -81,14 +82,14 @@ class ListValueDataTest {
             t.next();
         }
         System.out.format("%,d messages in one second\n", count);
-        assertTrue(count > 1000000);
+        assertThat(count, greaterThan(1000000L));
     }
 
     Map<Object, Integer> valueMap = new HashMap<Object, Integer>();
 
     private void checkin(Object value, List<?> list) {
         assertNotNull(value);
-        list.contains(value);
+        assertThat(list.contains(value), Matchers.is(true));
         int count = valueMap.getOrDefault(value, 0);
         valueMap.put(value, count + 1);
     }

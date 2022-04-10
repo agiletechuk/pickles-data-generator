@@ -78,6 +78,11 @@ public class IntegerData implements Data<Integer> {
     }
 
     @Override
+    public void reset() {
+        current = start;
+    }
+
+    @Override
     public Integer getValue() {
         return current;
     }
