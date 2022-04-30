@@ -52,17 +52,17 @@ class ListValueDataTest {
     public void randomTest() {
         valueMap = new HashMap<>();
         ListValueData<Object> t = new ListValueData<>(ITEMS, LimitBehavior.RANDOM);
-        for (int j = 0; j < 100; j++) {
+        for (int j = 0; j < 1000; j++) {
             assertFalse(t.endSequence());
             t.next();
             Object item = t.getValue();
             checkin(item, ITEMS);
         }
 
-        assertEquals(100, valueMap.get(ITEMS.get(0)) + valueMap.get(ITEMS.get(1)) + valueMap.get(ITEMS.get(2)));
-        assertTrue(valueMap.get(ITEMS.get(0)) > 20);
-        assertTrue(valueMap.get(ITEMS.get(1)) > 20);
-        assertTrue(valueMap.get(ITEMS.get(2)) > 20);
+        assertEquals(1000, valueMap.get(ITEMS.get(0)) + valueMap.get(ITEMS.get(1)) + valueMap.get(ITEMS.get(2)));
+        assertTrue(valueMap.get(ITEMS.get(0)) > 200);
+        assertTrue(valueMap.get(ITEMS.get(1)) > 200);
+        assertTrue(valueMap.get(ITEMS.get(2)) > 200);
     }
 
     @Test
