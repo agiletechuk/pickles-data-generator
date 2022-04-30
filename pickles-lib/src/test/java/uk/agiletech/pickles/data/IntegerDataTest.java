@@ -200,7 +200,7 @@ class IntegerDataTest {
         long start = System.currentTimeMillis();
         long count = 0;
         do {
-            Integer val = data.getValue();
+            int val = data.getIntValue();
             data.next();
             if (count<5) System.out.println(val);
             count ++;

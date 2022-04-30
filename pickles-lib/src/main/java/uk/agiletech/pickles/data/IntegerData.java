@@ -2,6 +2,9 @@ package uk.agiletech.pickles.data;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+import static uk.agiletech.pickles.data.LimitBehavior.LAST_VALUE;
+import static uk.agiletech.pickles.data.LimitBehavior.NULL;
+
 /**
  * Generate range of integers. The start, end and increment can be configured
  * The sequence can go up or down or be skip around randomly
@@ -13,7 +16,8 @@ public class IntegerData implements Data<Integer> {
     private final int end;
     private final int increment;
     private final LimitBehavior limitBehavior;
-    private Integer current;
+    private int current;
+    private boolean isnull;
 
     /**
      * Create an IntegerGenerator with default limit behavior = LimitBehavior.NULL
@@ -23,7 +27,7 @@ public class IntegerData implements Data<Integer> {
      * @param increment increment add (or subtracted if negative) to the current value
      */
     public IntegerData(int start, int end, int increment) {
-        this(start, end, increment, LimitBehavior.NULL);
+        this(start, end, increment, NULL);
     }
 
     /**
@@ -43,35 +47,43 @@ public class IntegerData implements Data<Integer> {
         this.end = end;
         this.increment = increment;
         this.current = start;
+        isnull = false;
     }
 
     @Override
     public boolean endSequence() {
-        return current == null;
+        return isnull;
     }
 
     @Override
     public void next() {
-        Integer previous = current;
         if (limitBehavior == LimitBehavior.RANDOM) {
             current = randomInt();
-        } else if (current != null) {
-            current += increment;
+        } else if (!isnull) {
+            int next = current + increment;
             if (positiveIncrement()) {
-                if (current > end) {
-                    current = switch (limitBehavior) {
-                        case NULL -> null;
-                        case LAST_VALUE -> previous;
-                        default -> start + ((current - start) % (end - start + 1));
-                    };
+                if (next > end) {
+                    if (limitBehavior == NULL) {
+                        isnull = true;
+                    } else if (limitBehavior == LAST_VALUE) {
+                        // do nothing
+                    } else {
+                        current = start + ((next - start) % (end - start + 1));
+                    }
+                } else {
+                    current = next;
                 }
             } else {
-                if (current < end) {
-                    current = switch (limitBehavior) {
-                        case NULL -> null;
-                        case LAST_VALUE -> previous;
-                        default -> start - ((start - current) % (start - end + 1));
-                    };
+                if (next < end) {
+                    if (limitBehavior == NULL) {
+                        isnull = true;
+                    } else if (limitBehavior == LAST_VALUE) {
+                        // do nothing
+                    } else {
+                        current = start - ((start - next) % (start - end + 1));
+                    }
+                } else {
+                    current = next;
                 }
             }
         }
@@ -84,12 +96,16 @@ public class IntegerData implements Data<Integer> {
 
     @Override
     public boolean isGroupable() {
-        return limitBehavior == LimitBehavior.NULL;
+        return limitBehavior == NULL;
+    }
+
+    public int getIntValue() {
+        return current;
     }
 
     @Override
     public Integer getValue() {
-        return current;
+        return isnull ? null : current;
     }
 
     private boolean positiveIncrement() {
