@@ -80,6 +80,11 @@ public class DecimalData implements Data<BigDecimal> {
     }
 
     @Override
+    public boolean isGroupable() {
+        return limitBehavior == LimitBehavior.NULL;
+    }
+
+    @Override
     public BigDecimal getValue() {
         return current;
     }

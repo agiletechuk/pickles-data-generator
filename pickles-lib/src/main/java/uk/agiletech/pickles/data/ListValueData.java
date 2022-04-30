@@ -30,6 +30,11 @@ public class ListValueData<T> implements Data<T> {
     }
 
     @Override
+    public boolean isGroupable() {
+        return indexGenerator.isGroupable();
+    }
+
+    @Override
     public T getValue() {
         return indexGenerator.getValue() == null ? null : values.get(indexGenerator.getValue());
     }

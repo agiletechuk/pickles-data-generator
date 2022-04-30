@@ -79,6 +79,11 @@ public class DoubleData implements Data<Double> {
     }
 
     @Override
+    public boolean isGroupable() {
+        return limitBehavior == LimitBehavior.NULL;
+    }
+
+    @Override
     public Double getValue() {
         return current;
     }

@@ -24,17 +24,17 @@ class DecimalDataTest {
         DecimalFormat decimalFormat = new DecimalFormat(pattern, symbols);
         decimalFormat.setParseBigDecimal(true);
         DecimalData data = new DecimalData(BigDecimal.valueOf(Long.MAX_VALUE),
-                (BigDecimal)decimalFormat.parse("98,765,432,110,692,467,440,017.111"),
-                (BigDecimal)decimalFormat.parse("1,000,000,000,000,000,000.111"));
+                (BigDecimal) decimalFormat.parse("98,765,432,110,692,467,440,017.111"),
+                (BigDecimal) decimalFormat.parse("1,000,000,000,000,000,000.111"), LimitBehavior.NULL);
         long start = System.currentTimeMillis();
         long count = 0;
         do {
             BigDecimal val = data.getValue();
             data.next();
-            if (count<5) System.out.println(val);
-            count ++;
-        } while(System.currentTimeMillis() - start < 1000);
-        System.out.printf("%d messages a second Performance of bigdecimal data%n",count);
+            if (count < 5) System.out.println(val);
+            count++;
+        } while (System.currentTimeMillis() - start < 1000);
+        System.out.printf("%,d messages a second Performance of bigdecimal data%n", count);
         assertThat(count, greaterThan(1000000L));
     }
 }

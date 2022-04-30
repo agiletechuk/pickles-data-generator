@@ -69,7 +69,7 @@ class ListValueDataTest {
     public void performanceTest() {
         List<Integer> items = ThreadLocalRandom.current().ints(1000).boxed().collect(Collectors.toList());
         ListValueData<Integer> t = new ListValueData<>(items, LimitBehavior.RANDOM);
-        valueMap = new HashMap<Object, Integer>();
+        valueMap = new HashMap<>();
 
         long end = System.currentTimeMillis() + 1000;
         long count = 0;
@@ -81,11 +81,11 @@ class ListValueDataTest {
             assertFalse(t.endSequence());
             t.next();
         }
-        System.out.format("%,d messages in one second\n", count);
+        System.out.format("%,d messages in one second for ListValue Data\n", count);
         assertThat(count, greaterThan(1000000L));
     }
 
-    Map<Object, Integer> valueMap = new HashMap<Object, Integer>();
+    Map<Object, Integer> valueMap = new HashMap<>();
 
     private void checkin(Object value, List<?> list) {
         assertNotNull(value);

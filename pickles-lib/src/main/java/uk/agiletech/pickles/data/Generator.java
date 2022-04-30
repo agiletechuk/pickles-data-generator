@@ -4,4 +4,5 @@ public interface Generator {
     boolean endSequence();
     void next();
     void reset();
+    boolean isGroupable();
 }

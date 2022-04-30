@@ -10,7 +10,7 @@ public class TestHelper {
     public static File getFile(String fileName) {
         requireNonNull(fileName);
         var classLoader = TestHelper.class.getClassLoader();
-        var file = new File(requireNonNull(classLoader.getResource("test.json")).getFile());
+        var file = new File(requireNonNull(classLoader.getResource(fileName)).getFile());
         assertTrue(file.exists());
         return file;
     }

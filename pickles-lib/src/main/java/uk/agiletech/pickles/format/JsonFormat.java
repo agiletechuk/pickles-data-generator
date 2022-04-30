@@ -2,7 +2,6 @@ package uk.agiletech.pickles.format;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 

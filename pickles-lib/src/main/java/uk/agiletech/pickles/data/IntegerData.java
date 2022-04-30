@@ -83,6 +83,11 @@ public class IntegerData implements Data<Integer> {
     }
 
     @Override
+    public boolean isGroupable() {
+        return limitBehavior == LimitBehavior.NULL;
+    }
+
+    @Override
     public Integer getValue() {
         return current;
     }

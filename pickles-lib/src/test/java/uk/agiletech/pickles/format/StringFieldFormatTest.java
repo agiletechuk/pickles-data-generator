@@ -3,7 +3,6 @@ package uk.agiletech.pickles.format;
 import org.junit.jupiter.api.Test;
 import uk.agiletech.pickles.data.IntegerData;
 import uk.agiletech.pickles.data.LimitBehavior;
-import uk.agiletech.pickles.format.StringFormat;
 
 import java.util.List;
 

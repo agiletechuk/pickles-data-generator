@@ -24,6 +24,11 @@ public class UUIDData implements Data<UUID> {
     }
 
     @Override
+    public boolean isGroupable() {
+        return false;
+    }
+
+    @Override
     public UUID getValue() {
         return current;
     }
