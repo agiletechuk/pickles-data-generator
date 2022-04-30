@@ -35,13 +35,4 @@ public class IntegerSteps {
         getInstance().add(name, generator);
     }
 
-    @And("Generators group {string}")
-    public void generatorsGroup(String commaSeparatedGroups) {
-        List<String> groups = trim(Arrays.stream(commaSeparatedGroups.split(",")).toList());
-        getInstance().generatorGroup(groups);
-    }
-
-    private List<String> trim(List<String> list) {
-        return list.stream().map(String::trim).toList();
-    }
 }

@@ -3,6 +3,7 @@ package uk.agiletech.pickles.format;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import uk.agiletech.pickles.data.PickleException;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,15 +43,21 @@ public class DataFormat<T> implements Format<T> {
         } else {
             String[] subFields = fields[0].split("\\[");
             if (subFields[0].length() > 0) {
-                if (dataObject instanceof Map) {
+                if (dataObject instanceof Map map) {
                     // subfield[0] is a field in a map
-                    processMap((Map<String, Object>) dataObject, key, format, pos, fields, subFields);
+                    processMap(map, key, format, pos, fields, subFields);
                 } else {
-                    // data object is not a Map
+                    throw new PickleException("Map expected but data object is not a Map");
+                    // TODO add more detail to exception what where why
                 }
             } else {
                 // subfield[1] contains an index to get from a list'
-                processList((List<Object>) dataObject, key, format, pos, fields, subFields);
+                if (dataObject instanceof List list) {
+                    processList(list, key, format, pos, fields, subFields);
+                } else {
+                    throw new PickleException("List expected but data object is not a list");
+                    // TODO add more detail to exception what where why
+                }
             }
         }
     }

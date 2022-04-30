@@ -42,10 +42,10 @@ class JsonFormatTest {
         String source = "{\"a1\":23,\"a2\":\"stringval\",\"a3\":\"some val\"}";
         IntegerData intdata = new IntegerData(1, 4, 1);
         UUIDData uuidData = new UUIDData();
-        HashMap<Object, Object> fieldMap = new HashMap<>();
+        HashMap<String, Format<?>> fieldMap = new HashMap<>();
         fieldMap.put("a1", intdata);
         fieldMap.put("a2", uuidData);
-        DataFormat<?> dataFormatObject = new DataFormat(fieldMap, source);
+        DataFormat<Object> dataFormatObject = new DataFormat<>(fieldMap, source);
         JsonFormat json = new JsonFormat(dataFormatObject);
         assertThat(json.getValue(), equalTo("{\"a1\":1,\"a2\":\"" + uuidData.getValue() + "\",\"a3\":\"some val\"}"));
         intdata.next();
