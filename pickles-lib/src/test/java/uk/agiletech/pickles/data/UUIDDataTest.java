@@ -52,7 +52,7 @@ class UUIDDataTest {
             if (count<5) System.out.println(val.toString());
             count ++;
         } while(System.currentTimeMillis() - start < 1000);
-        System.out.printf("%,d messages a second Performance of UUID data%n",count);
+        System.out.printf("%,d per second Performance of UUID data%n",count);
         assertThat(count, greaterThan(1000000L));
     }
 }

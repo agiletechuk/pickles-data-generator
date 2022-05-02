@@ -45,20 +45,20 @@ class StringFieldFormatTest {
     public void testTwoGenerators() {
         IntegerData gen1 = new IntegerData(9, 11, 1, LimitBehavior.NULL);
         IntegerData gen2 = new IntegerData(0, 3, 2, LimitBehavior.LOOP);
-        stringFieldFormat = new StringFormat("0x%x £%03d", List.of(gen1, gen2));
+        stringFieldFormat = new StringFormat("0x%X £%03d", List.of(gen1, gen2));
 
         assertEquals("0x9 £000", stringFieldFormat.getValue());
         gen1.next();
         gen2.next();
-        assertEquals("0xa £002", stringFieldFormat.getValue());
+        assertEquals("0xA £002", stringFieldFormat.getValue());
         gen1.next();
         gen2.next();
-        assertEquals("0xb £000", stringFieldFormat.getValue());
+        assertEquals("0xB £000", stringFieldFormat.getValue());
         gen1.next();
         gen2.next();
         assertTrue(gen1.endSequence());
         assertFalse(gen2.endSequence());
-        assertEquals("0xnull £002", stringFieldFormat.getValue());
+        assertEquals("0xNULL £002", stringFieldFormat.getValue());
     }
 
 }

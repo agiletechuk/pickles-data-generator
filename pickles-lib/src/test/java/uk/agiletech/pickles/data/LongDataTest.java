@@ -190,8 +190,17 @@ class LongDataTest {
     }
 
     @Test
-    public void performance() {
-        LongData data = new LongData(Long.MIN_VALUE, Long.MAX_VALUE,1, LimitBehavior.NULL);
+    public void sequentialPerformance() {
+        performance(LimitBehavior.NULL);
+    }
+
+    @Test
+    public void randomPerformance(){
+        performance(LimitBehavior.RANDOM);
+    }
+
+    private void performance(LimitBehavior limitBehavior) {
+        LongData data = new LongData(Long.MIN_VALUE, Long.MAX_VALUE,1, limitBehavior);
         long start = System.currentTimeMillis();
         long count = 0;
         do {
@@ -200,7 +209,8 @@ class LongDataTest {
             if (count<5) System.out.println(val);
             count ++;
         } while(System.currentTimeMillis() - start < 1000);
-        System.out.printf("%,d messages a second Performance of long data%n",count);
+        System.out.printf("%,d per second Performance of %s long data%n",count,
+                limitBehavior == LimitBehavior.RANDOM ? "random" : "sequential");
         assertThat(count, greaterThan(1000000L));
     }
 

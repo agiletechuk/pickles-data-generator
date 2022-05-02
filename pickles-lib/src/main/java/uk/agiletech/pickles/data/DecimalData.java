@@ -2,6 +2,9 @@ package uk.agiletech.pickles.data;
 
 import java.math.BigDecimal;
 
+import static uk.agiletech.pickles.data.LimitBehavior.NULL;
+import static uk.agiletech.pickles.data.LimitBehavior.RANDOM;
+
 public class DecimalData implements Data<BigDecimal> {
 
     private final BigDecimal start;
@@ -11,17 +14,15 @@ public class DecimalData implements Data<BigDecimal> {
     private BigDecimal current;
 
     /**
-     *
-     * @param start         The value to start with
-     * @param end           The value limit at the end
-     * @param increment     The value by which to increment (or decrement if -ve)
+     * @param start     The value to start with
+     * @param end       The value limit at the end
+     * @param increment The value by which to increment (or decrement if -ve)
      */
     public DecimalData(BigDecimal start, BigDecimal end, BigDecimal increment) {
-        this(start, end, increment, LimitBehavior.NULL);
+        this(start, end, increment, NULL);
     }
 
     /**
-     *
      * @param start         The value to start with
      * @param end           The value limit at the end
      * @param increment     The value by which to increment (or decrement if -ve)
@@ -32,14 +33,14 @@ public class DecimalData implements Data<BigDecimal> {
      */
     DecimalData(BigDecimal start, BigDecimal end, BigDecimal increment, LimitBehavior limitBehavior) {
         this.limitBehavior = limitBehavior;
-        if (!((start.compareTo(end)<0 && increment.compareTo(BigDecimal.ZERO)>0 || (start.compareTo(end)>0
-                && increment.compareTo(BigDecimal.ZERO)>0)))) {
+        if (!((start.compareTo(end) < 0 && increment.compareTo(BigDecimal.ZERO) > 0 || (start.compareTo(end) > 0
+                && increment.compareTo(BigDecimal.ZERO) > 0)))) {
             throw new IllegalArgumentException("start must be before end for the given increment");
         }
         this.start = start;
         this.end = end;
         this.increment = increment;
-        this.current = start;
+        reset();
     }
 
     @Override
@@ -50,12 +51,12 @@ public class DecimalData implements Data<BigDecimal> {
     @Override
     public void next() {
         BigDecimal previous = current;
-        if (limitBehavior == LimitBehavior.RANDOM) {
+        if (limitBehavior == RANDOM) {
             current = randomDecimal();
         } else if (current != null) {
             current = current.add(increment);
             if (positiveIncrement()) {
-                if (current.compareTo(end)>0) {
+                if (current.compareTo(end) > 0) {
                     current = switch (limitBehavior) {
                         case NULL -> null;
                         case LAST_VALUE -> previous;
@@ -63,7 +64,7 @@ public class DecimalData implements Data<BigDecimal> {
                     };
                 }
             } else {
-                if (current.compareTo(end)<0) {
+                if (current.compareTo(end) < 0) {
                     current = switch (limitBehavior) {
                         case NULL -> null;
                         case LAST_VALUE -> previous;
@@ -76,12 +77,12 @@ public class DecimalData implements Data<BigDecimal> {
 
     @Override
     public void reset() {
-        current = start;
+        this.current = (limitBehavior == RANDOM) ? randomDecimal() : start;
     }
 
     @Override
     public boolean isGroupable() {
-        return limitBehavior == LimitBehavior.NULL;
+        return limitBehavior == NULL;
     }
 
     @Override

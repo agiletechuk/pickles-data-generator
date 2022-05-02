@@ -16,12 +16,12 @@ public class GeneratorGroup implements Generator {
 
     public GeneratorGroup(List<Generator> generators) {
         if (generators.size() < 2) {
-            throw new PickleException("Group must contain more than one generator");
+            throw new PicklesException("Group must contain more than one generator");
         }
         List<Generator> nonGroupable = generators.subList(0, generators.size() - 1).stream()
                 .filter(g -> !g.isGroupable()).toList();
         if (!nonGroupable.isEmpty()) {
-            throw new PickleException("Generator list contains non-groupable generators. Only last generator is allowed to be non-groupable");
+            throw new PicklesException("Generator list contains non-groupable generators. Only last generator is allowed to be non-groupable");
         }
         this.generators = Collections.unmodifiableList(generators);
         end = false;

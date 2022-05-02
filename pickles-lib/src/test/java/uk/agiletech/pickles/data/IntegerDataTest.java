@@ -3,11 +3,6 @@ package uk.agiletech.pickles.data;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.ParseException;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,6 +28,57 @@ class IntegerDataTest {
         integerGenerator.next();
         assertNull(integerGenerator.getValue());
         assertTrue(integerGenerator.endSequence());
+    }
+
+
+    @Test
+    public void typicalAscendingWithResetMidway() {
+        integerGenerator = new IntegerData(0, 3, 1);
+        assertEquals(0, integerGenerator.getValue());
+        assertFalse(integerGenerator.endSequence());
+        integerGenerator.next();
+        assertEquals(1, integerGenerator.getValue());
+        assertFalse(integerGenerator.endSequence());
+        integerGenerator.next();
+        assertEquals(2, integerGenerator.getValue());
+        assertFalse(integerGenerator.endSequence());
+        integerGenerator.reset();
+        assertEquals(0, integerGenerator.getValue());
+        assertFalse(integerGenerator.endSequence());
+        integerGenerator.next();
+        assertEquals(1, integerGenerator.getValue());
+        assertFalse(integerGenerator.endSequence());
+        integerGenerator.next();
+        assertEquals(2, integerGenerator.getValue());
+        assertFalse(integerGenerator.endSequence());
+        integerGenerator.next();
+        assertEquals(3, integerGenerator.getValue());
+        assertFalse(integerGenerator.endSequence());
+        integerGenerator.next();
+        assertNull(integerGenerator.getValue());
+        assertTrue(integerGenerator.endSequence());
+    }
+
+    @Test
+    public void typicalAscendingWithResetAtEnd() {
+        integerGenerator = new IntegerData(0, 3, 1);
+        assertEquals(0, integerGenerator.getValue());
+        assertFalse(integerGenerator.endSequence());
+        integerGenerator.next();
+        assertEquals(1, integerGenerator.getValue());
+        assertFalse(integerGenerator.endSequence());
+        integerGenerator.next();
+        assertEquals(2, integerGenerator.getValue());
+        assertFalse(integerGenerator.endSequence());
+        integerGenerator.next();
+        assertEquals(3, integerGenerator.getValue());
+        assertFalse(integerGenerator.endSequence());
+        integerGenerator.next();
+        assertNull(integerGenerator.getValue());
+        assertTrue(integerGenerator.endSequence());
+        integerGenerator.reset();
+        assertEquals(0, integerGenerator.getValue());
+        assertFalse(integerGenerator.endSequence());
     }
 
 
@@ -195,17 +241,27 @@ class IntegerDataTest {
     }
 
     @Test
-    public void performance() {
-        IntegerData data = new IntegerData(Integer.MIN_VALUE, Integer.MAX_VALUE,1, LimitBehavior.NULL);
+    public void sequentialPerformance() {
+        performance(LimitBehavior.NULL);
+    }
+
+    @Test
+    public void randomPerformance() {
+        performance(LimitBehavior.RANDOM);
+    }
+
+    private void performance(LimitBehavior limitBehavior) {
+        IntegerData data = new IntegerData(Integer.MIN_VALUE, Integer.MAX_VALUE, 1, limitBehavior);
         long start = System.currentTimeMillis();
         long count = 0;
         do {
             int val = data.getIntValue();
             data.next();
-            if (count<5) System.out.println(val);
-            count ++;
-        } while(System.currentTimeMillis() - start < 1000);
-        System.out.printf("%,d messages a second Performance of integer data%n",count);
+            if (count < 5) System.out.println(val);
+            count++;
+        } while (System.currentTimeMillis() - start < 1000);
+        System.out.printf("%,d per second Performance of %s integer data%n", count,
+                limitBehavior == LimitBehavior.RANDOM ? "random" : "sequential");
         assertThat(count, greaterThan(1000000L));
     }
 

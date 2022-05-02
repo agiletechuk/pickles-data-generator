@@ -87,7 +87,7 @@ public class DataFormatTest {
             generatorGroup.next();
             count++;
         }
-        System.out.printf("DataFormat performance %,d messages in 1 seconds%n",count);
+        System.out.printf("DataFormat performance %,d per second%n",count);
         assertThat(count,is(greaterThan(500000L)));
     }
 

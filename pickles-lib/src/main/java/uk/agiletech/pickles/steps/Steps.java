@@ -1,4 +1,4 @@
-package uk.agiletech.pickles.step;
+package uk.agiletech.pickles.steps;
 
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
@@ -18,7 +18,7 @@ public class Steps {
 
     @When("generate {int} messages")
     public void generateMessages(int count) {
-        for( int i=0; i< count; i++) {
+        for (int i = 0; i < count; i++) {
             getInstance().next();
         }
     }

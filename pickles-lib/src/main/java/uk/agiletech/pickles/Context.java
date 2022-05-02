@@ -30,15 +30,15 @@ public class Context {
         this.recorder = new Recorder(Collections.emptyList());
     }
 
-    public synchronized void add(String name, Format<?> format) {
+    public void add(String name, Format<?> format) {
         addFormat(name, format);
     }
 
-    public synchronized void add(String name, Data<?> data) {
+    public void add(String name, Data<?> data) {
         addFormat(name, data);
 
         HashMap<String, Generator> newMap = new HashMap<>(generatorMap);
-        newMap.put(name,data);
+        newMap.put(name, data);
         generatorMap = Collections.unmodifiableMap(newMap);
 
         Set<Generator> newSet = new HashSet<>(groups);
@@ -57,12 +57,12 @@ public class Context {
      * Rebuild the generator groups to grouop the specified generators together
      * The specified groups will be removed from any existing groups
      */
-    public void  generatorGroup(List<String> generatorList) {
+    public void generatorGroup(List<String> generatorList) {
         List<Generator> l = generatorList.stream().map(s -> generatorMap.get(s)).collect(Collectors.toList());
         GeneratorGroup group = new GeneratorGroup(l);
         HashSet<Generator> newGroups = new HashSet<>();
         newGroups.add(group);
-        for (Generator g: groups) {
+        for (Generator g : groups) {
             if (l.contains(g)) continue;    // skip out ones that are in new group
             if (g instanceof GeneratorGroup gg) {
                 Optional<GeneratorGroup> newGeneratorGroup = gg.removeGenerators(l);

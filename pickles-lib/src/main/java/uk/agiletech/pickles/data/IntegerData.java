@@ -2,8 +2,7 @@ package uk.agiletech.pickles.data;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-import static uk.agiletech.pickles.data.LimitBehavior.LAST_VALUE;
-import static uk.agiletech.pickles.data.LimitBehavior.NULL;
+import static uk.agiletech.pickles.data.LimitBehavior.*;
 
 /**
  * Generate range of integers. The start, end and increment can be configured
@@ -16,6 +15,7 @@ public class IntegerData implements Data<Integer> {
     private final int end;
     private final int increment;
     private final LimitBehavior limitBehavior;
+    private final int randomEnd;
     private int current;
     private boolean isnull;
 
@@ -45,9 +45,9 @@ public class IntegerData implements Data<Integer> {
         }
         this.start = start;
         this.end = end;
+        this.randomEnd = (end == Integer.MAX_VALUE) ? end : end + 1;
         this.increment = increment;
-        this.current = start;
-        isnull = false;
+        reset();
     }
 
     @Override
@@ -65,9 +65,7 @@ public class IntegerData implements Data<Integer> {
                 if (next > end) {
                     if (limitBehavior == NULL) {
                         isnull = true;
-                    } else if (limitBehavior == LAST_VALUE) {
-                        // do nothing
-                    } else {
+                    } else if (limitBehavior != LAST_VALUE) {
                         current = start + ((next - start) % (end - start + 1));
                     }
                 } else {
@@ -77,9 +75,7 @@ public class IntegerData implements Data<Integer> {
                 if (next < end) {
                     if (limitBehavior == NULL) {
                         isnull = true;
-                    } else if (limitBehavior == LAST_VALUE) {
-                        // do nothing
-                    } else {
+                    } else if (limitBehavior != LAST_VALUE) {
                         current = start - ((start - next) % (start - end + 1));
                     }
                 } else {
@@ -91,7 +87,8 @@ public class IntegerData implements Data<Integer> {
 
     @Override
     public void reset() {
-        current = start;
+        this.current = (limitBehavior == RANDOM) ? randomInt() : start;
+        this.isnull = false;
     }
 
     @Override
@@ -113,6 +110,6 @@ public class IntegerData implements Data<Integer> {
     }
 
     private int randomInt() {
-        return ThreadLocalRandom.current().nextInt(start, end + 1);
+        return ThreadLocalRandom.current().nextInt(start, randomEnd);
     }
 }

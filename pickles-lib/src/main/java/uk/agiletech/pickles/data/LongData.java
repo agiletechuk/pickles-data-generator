@@ -2,8 +2,7 @@ package uk.agiletech.pickles.data;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-import static uk.agiletech.pickles.data.LimitBehavior.LAST_VALUE;
-import static uk.agiletech.pickles.data.LimitBehavior.NULL;
+import static uk.agiletech.pickles.data.LimitBehavior.*;
 
 /**
  * Generate range of longs. The start, end and increment can be configured
@@ -16,6 +15,7 @@ public class LongData implements Data<Long> {
     private final long end;
     private final long increment;
     private final LimitBehavior limitBehavior;
+    private final long randomEnd;
     private long current;
     private boolean isnull;
 
@@ -45,9 +45,9 @@ public class LongData implements Data<Long> {
         }
         this.start = start;
         this.end = end;
+        this.randomEnd = end == Long.MAX_VALUE ? end : end + 1;
         this.increment = increment;
-        this.current = start;
-        isnull = false;
+        reset();
     }
 
     @Override
@@ -65,9 +65,7 @@ public class LongData implements Data<Long> {
                 if (next > end) {
                     if (limitBehavior == NULL) {
                         isnull = true;
-                    } else if (limitBehavior == LAST_VALUE) {
-                        // do nothing
-                    } else {
+                    } else if (limitBehavior != LAST_VALUE) {
                         current = start + ((next - start) % (end - start + 1));
                     }
                 } else {
@@ -77,9 +75,7 @@ public class LongData implements Data<Long> {
                 if (next < end) {
                     if (limitBehavior == NULL) {
                         isnull = true;
-                    } else if (limitBehavior == LAST_VALUE) {
-                        // do nothing
-                    } else {
+                    } else if (limitBehavior != LAST_VALUE) {
                         current = start - ((start - next) % (start - end + 1));
                     }
                 } else {
@@ -91,7 +87,8 @@ public class LongData implements Data<Long> {
 
     @Override
     public void reset() {
-        current = start;
+        this.current = limitBehavior == RANDOM ? randomLong() : start;
+        this.isnull = false;
     }
 
     @Override
@@ -113,6 +110,6 @@ public class LongData implements Data<Long> {
     }
 
     private long randomLong() {
-        return ThreadLocalRandom.current().nextLong(start, end + 1);
+        return ThreadLocalRandom.current().nextLong(start, randomEnd);
     }
 }

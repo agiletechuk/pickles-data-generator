@@ -81,7 +81,7 @@ class ListValueDataTest {
             assertFalse(t.endSequence());
             t.next();
         }
-        System.out.format("%,d messages in one second for ListValue Data\n", count);
+        System.out.format("%,d per second for ListValue Data\n", count);
         assertThat(count, greaterThan(1000000L));
     }
 

@@ -3,7 +3,7 @@ package uk.agiletech.pickles.format;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import uk.agiletech.pickles.data.PickleException;
+import uk.agiletech.pickles.data.PicklesException;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,7 +47,7 @@ public class DataFormat<T> implements Format<T> {
                     // subfield[0] is a field in a map
                     processMap(map, key, format, pos, fields, subFields);
                 } else {
-                    throw new PickleException("Map expected but data object is not a Map");
+                    throw new PicklesException("Map expected but data object is not a Map");
                     // TODO add more detail to exception what where why
                 }
             } else {
@@ -55,7 +55,7 @@ public class DataFormat<T> implements Format<T> {
                 if (dataObject instanceof List list) {
                     processList(list, key, format, pos, fields, subFields);
                 } else {
-                    throw new PickleException("List expected but data object is not a list");
+                    throw new PicklesException("List expected but data object is not a list");
                     // TODO add more detail to exception what where why
                 }
             }
@@ -67,7 +67,7 @@ public class DataFormat<T> implements Format<T> {
         if (endIndex == -1) {
             throw new RuntimeException("missing ']' at position " + pos + subFields[0].length());
         } else {
-            String arrayIndexString = subFields[1].substring(0,endIndex);
+            String arrayIndexString = subFields[1].substring(0, endIndex);
             int arrayIndex = Integer.parseInt(arrayIndexString);
 
             if (fields.length > 1 || subFields.length > 2) {
@@ -84,7 +84,7 @@ public class DataFormat<T> implements Format<T> {
         }
     }
 
-    private void processMap(Map<String,Object> dataObject, String key, Format<?> format, int pos, String[] fields, String[] subFields) {
+    private void processMap(Map<String, Object> dataObject, String key, Format<?> format, int pos, String[] fields, String[] subFields) {
         if (fields.length > 1 || subFields.length > 1) {
             // apply in subobject
             applyGeneraatedField(
@@ -101,7 +101,7 @@ public class DataFormat<T> implements Format<T> {
         }
     }
 
-    private void addFormatToMap(Map<String,Object> dataObject, String field, Format<?> format) {
+    private void addFormatToMap(Map<String, Object> dataObject, String field, Format<?> format) {
         dataObject.put(field, format.getValue());
     }
 

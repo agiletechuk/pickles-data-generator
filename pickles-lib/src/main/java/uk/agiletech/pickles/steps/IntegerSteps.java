@@ -1,12 +1,8 @@
-package uk.agiletech.pickles.step;
+package uk.agiletech.pickles.steps;
 
-import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import uk.agiletech.pickles.data.IntegerData;
 import uk.agiletech.pickles.data.LimitBehavior;
-
-import java.util.Arrays;
-import java.util.List;
 
 import static uk.agiletech.pickles.Context.getInstance;
 
