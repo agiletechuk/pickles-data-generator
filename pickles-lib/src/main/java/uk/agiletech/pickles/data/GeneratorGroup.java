@@ -1,5 +1,7 @@
 package uk.agiletech.pickles.data;
 
+import uk.agiletech.pickles.PicklesException;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -7,7 +9,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class GeneratorGroup implements Generator {
-    List<Generator> generators;
+    private List<Generator> generators;
     private boolean end;
 
     public GeneratorGroup(Generator... generators) {
@@ -45,14 +47,20 @@ public class GeneratorGroup implements Generator {
             generator.next();
             if (generator.endSequence()) {
                 i++;
-                if (i > generators.size()) {
+                if (i >= generators.size()) {
                     end = true;
                 } else {
                     next = true;
-                    generator.reset();
                 }
             }
         } while (next);
+        if (end != true) {
+            // reset (previous) generators that have reached their limit
+            while (i>0) {
+                i--;
+                generators.get(i).reset();
+            }
+        }
     }
 
     @Override
@@ -63,10 +71,6 @@ public class GeneratorGroup implements Generator {
     @Override
     public boolean isGroupable() {
         return true;
-    }
-
-    public boolean isEmpty() {
-        return generators.isEmpty();
     }
 
     public Optional<GeneratorGroup> removeGenerators(List<Generator> l) {

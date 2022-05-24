@@ -3,13 +3,18 @@ package uk.agiletech.pickles.format;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import uk.agiletech.pickles.data.PicklesException;
+import uk.agiletech.pickles.PicklesException;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * DataFormat - provides a json record with any number of the fields consisting of generated values
+ *
+ * @param <T> - The type. Most of the time this will be Object
+ */
 public class DataFormat<T> implements Format<T> {
 
     private final Map<String, Format<?>> generatedFields;

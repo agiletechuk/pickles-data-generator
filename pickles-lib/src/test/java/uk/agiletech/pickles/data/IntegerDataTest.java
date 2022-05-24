@@ -240,6 +240,102 @@ class IntegerDataTest {
         assertFalse(integerGenerator.endSequence());
     }
 
+    /*
+     * Repeat
+     */
+    @Test
+    public void typicalAscendingWithRepeat() {
+        integerGenerator = new IntegerData(0, 3, 1, LimitBehavior.REPEAT);
+        assertEquals(0, integerGenerator.getValue());
+        assertFalse(integerGenerator.endSequence());
+        integerGenerator.next();
+        assertEquals(1, integerGenerator.getValue());
+        assertFalse(integerGenerator.endSequence());
+        integerGenerator.next();
+        assertEquals(2, integerGenerator.getValue());
+        assertFalse(integerGenerator.endSequence());
+        integerGenerator.next();
+        assertEquals(3, integerGenerator.getValue());
+        assertFalse(integerGenerator.endSequence());
+        integerGenerator.next();
+        assertEquals(0, integerGenerator.getValue());
+        integerGenerator.next();
+        assertEquals(1, integerGenerator.getValue());
+        integerGenerator.next();
+        assertEquals(2, integerGenerator.getValue());
+        integerGenerator.next();
+        assertEquals(3, integerGenerator.getValue());
+        integerGenerator.next();
+        assertEquals(0, integerGenerator.getValue());
+        integerGenerator.next();
+        assertEquals(1, integerGenerator.getValue());
+        assertFalse(integerGenerator.endSequence());
+    }
+
+    @Test
+    public void typicalDescendingWithRepeat() {
+        integerGenerator = new IntegerData(10, 8, -1, LimitBehavior.REPEAT);
+        assertFalse(integerGenerator.endSequence());
+        assertEquals(10, integerGenerator.getValue());
+        assertFalse(integerGenerator.endSequence());
+        integerGenerator.next();
+        assertEquals(9, integerGenerator.getValue());
+        assertFalse(integerGenerator.endSequence());
+        integerGenerator.next();
+        assertEquals(8, integerGenerator.getValue());
+        assertFalse(integerGenerator.endSequence());
+        integerGenerator.next();
+        assertEquals(10, integerGenerator.getValue());
+        assertFalse(integerGenerator.endSequence());
+        integerGenerator.next();
+        assertEquals(9, integerGenerator.getValue());
+        integerGenerator.next();
+        assertEquals(8, integerGenerator.getValue());
+        integerGenerator.next();
+        assertEquals(10, integerGenerator.getValue());
+        integerGenerator.next();
+        assertEquals(9, integerGenerator.getValue());
+        integerGenerator.next();
+        assertFalse(integerGenerator.endSequence());
+    }
+
+    @Test
+    public void inccrementMoreThanOneDescendingWithRepeat() {
+        integerGenerator = new IntegerData(10, 8, -2, LimitBehavior.REPEAT);
+        assertEquals(10, integerGenerator.getValue());
+        assertFalse(integerGenerator.endSequence());
+        integerGenerator.next();
+        assertEquals(8, integerGenerator.getValue());
+        assertFalse(integerGenerator.endSequence());
+        integerGenerator.next();
+        assertEquals(10, integerGenerator.getValue());
+        integerGenerator.next();
+        assertEquals(8, integerGenerator.getValue());
+        integerGenerator.next();
+        assertEquals(10, integerGenerator.getValue());
+        assertFalse(integerGenerator.endSequence());
+    }
+
+    @Test
+    public void inccrementTakesPastEndDescendingWithRepeat() {
+        integerGenerator = new IntegerData(14, 8, -4, LimitBehavior.REPEAT);
+        assertEquals(14, integerGenerator.getValue());
+        assertFalse(integerGenerator.endSequence());
+        integerGenerator.next();
+        assertEquals(10, integerGenerator.getValue());
+        assertFalse(integerGenerator.endSequence());
+        integerGenerator.next();
+        assertEquals(14, integerGenerator.getValue());
+        integerGenerator.next();
+        assertEquals(10, integerGenerator.getValue());
+        integerGenerator.next();
+        assertEquals(14, integerGenerator.getValue());
+        assertFalse(integerGenerator.endSequence());
+    }
+
+
+
+
     @Test
     public void sequentialPerformance() {
         performance(LimitBehavior.NULL);

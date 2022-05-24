@@ -7,8 +7,13 @@ import static uk.agiletech.pickles.Context.getInstance;
 
 public class MyStepdefs {
 
-    @Then("generator {string} value is {int}")
-    public void expectedValue(String name, Object value) {
+    @Then("format {string} value is {int}")
+    public void expectedValue(String name, int value) {
         assertThat(getInstance().getValue(name)).isSameAs(value);
+    }
+
+    @Then("format {string} value is {string}")
+    public void expectedValue(String name, String value) {
+        assertThat(getInstance().getValue(name)).isEqualTo(value);
     }
 }

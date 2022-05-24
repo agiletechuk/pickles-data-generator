@@ -65,8 +65,10 @@ public class LongData implements Data<Long> {
                 if (next > end) {
                     if (limitBehavior == NULL) {
                         isnull = true;
-                    } else if (limitBehavior != LAST_VALUE) {
+                    } else if (limitBehavior == LOOP) {
                         current = start + ((next - start) % (end - start + 1));
+                    } else if (limitBehavior == REPEAT) {
+                        current = start;
                     }
                 } else {
                     current = next;
@@ -75,8 +77,10 @@ public class LongData implements Data<Long> {
                 if (next < end) {
                     if (limitBehavior == NULL) {
                         isnull = true;
-                    } else if (limitBehavior != LAST_VALUE) {
+                    } else if (limitBehavior == LOOP) {
                         current = start - ((start - next) % (start - end + 1));
+                    } else if (limitBehavior == REPEAT) {
+                        current = start;
                     }
                 } else {
                     current = next;

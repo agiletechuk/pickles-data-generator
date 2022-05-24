@@ -3,6 +3,7 @@ package uk.agiletech.pickles.data;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static uk.agiletech.pickles.data.LimitBehavior.RANDOM;
+import static uk.agiletech.pickles.data.LimitBehavior.REPEAT;
 
 public class DoubleData implements Data<Double> {
 
@@ -59,6 +60,8 @@ public class DoubleData implements Data<Double> {
                         isnull = true;
                     } else if (limitBehavior == LimitBehavior.LOOP) {
                         current = start + ((current - start) % (end - start));
+                    } else if (limitBehavior == REPEAT) {
+                        current = start;
                     }
                 } else {
                     current = next;
@@ -69,6 +72,8 @@ public class DoubleData implements Data<Double> {
                         isnull = true;
                     } else if (limitBehavior == LimitBehavior.LOOP) {
                         current = start - ((start - current) % (start - end));
+                    } else if (limitBehavior == REPEAT) {
+                        current = start;
                     }
                 } else {
                     current = next;

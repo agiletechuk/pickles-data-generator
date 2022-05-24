@@ -1,5 +1,6 @@
 package uk.agiletech.pickles;
 
+import org.springframework.stereotype.Component;
 import uk.agiletech.pickles.data.Data;
 import uk.agiletech.pickles.data.Generator;
 import uk.agiletech.pickles.data.GeneratorGroup;
@@ -8,6 +9,7 @@ import uk.agiletech.pickles.format.Format;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Component
 public class Context {
 
     private static final String DEFAULT_GROUP = "DEFAULT";
@@ -15,9 +17,9 @@ public class Context {
 
     // Provides list of all Format and Data objects mapped to a unique name
     private volatile Map<String, Format<?>> formats;
+    private volatile Set<String> formatsToDisplay;
     private volatile Map<String, Generator> generatorMap;
     private volatile Set<Generator> groups;
-    private volatile Recorder recorder;
 
     public static Context getInstance() {
         return INSTANCE;
@@ -27,7 +29,7 @@ public class Context {
         this.generatorMap = new HashMap<>();
         this.groups = new HashSet<>();
         this.formats = new HashMap<>();
-        this.recorder = new Recorder(Collections.emptyList());
+        this.formatsToDisplay = new HashSet<>();
     }
 
     public void add(String name, Format<?> format) {
@@ -50,7 +52,6 @@ public class Context {
         HashMap<String, Format<?>> newMap = new HashMap<>(formats);
         newMap.put(name, format);
         formats = Collections.unmodifiableMap(newMap);
-        recorder = new Recorder(formats.keySet().stream().toList());
     }
 
     /*
@@ -75,7 +76,19 @@ public class Context {
 
     public void next() {
         groups.forEach(Generator::next);
-        printValues();
+        formatsToDisplay.forEach(this::printFormat);
+    }
+
+    public Object getValue(String formatName) {
+        return formats.get(formatName).getValue();
+    }
+
+    public Format<?> getFormat(String name) {
+        return formats.get(name);
+    }
+
+    public void enableDisplay(String format) {
+        formatsToDisplay.add(format);
     }
 
     private void addToGroups(GeneratorGroup group) {
@@ -91,12 +104,17 @@ public class Context {
     }
 
 
-    private void printValues() {
-        formats.forEach((key, value) -> recorder.snapshot(key, value.getValue()));
-        System.out.println(recorder.toString());
+//    private void printValues() {
+//        formats.forEach((key, value) -> recorder.snapshot(key, value.getValue()));
+//        System.out.println(recorder.toString());
+//    }
+
+
+    private void printFormat(String format) {
+        System.out.println(format + ":" + formats.get(format).getValue().toString());
     }
 
-    public Object getValue(String formatName) {
-        return formats.get(formatName).getValue();
+    public void disableDisplay(String format) {
+        formatsToDisplay.remove(format);
     }
 }

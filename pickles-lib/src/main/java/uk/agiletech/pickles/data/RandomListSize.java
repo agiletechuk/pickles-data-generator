@@ -1,5 +1,7 @@
 package uk.agiletech.pickles.data;
 
+import uk.agiletech.pickles.PicklesException;
+
 import java.util.concurrent.ThreadLocalRandom;
 
 public class RandomListSize implements ListSize {

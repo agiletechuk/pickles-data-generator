@@ -60,7 +60,8 @@ public class DecimalData implements Data<BigDecimal> {
                     current = switch (limitBehavior) {
                         case NULL -> null;
                         case LAST_VALUE -> previous;
-                        default -> start.add(current.subtract(start).divideAndRemainder(end.subtract(start))[1]);
+                        case LOOP -> start.add(current.subtract(start).divideAndRemainder(end.subtract(start))[1]);
+                        default -> start; // REPEAT
                     };
                 }
             } else {
@@ -68,7 +69,8 @@ public class DecimalData implements Data<BigDecimal> {
                     current = switch (limitBehavior) {
                         case NULL -> null;
                         case LAST_VALUE -> previous;
-                        default -> start.subtract(start.subtract(current).divideAndRemainder(start.subtract(end))[1]);
+                        case LOOP -> start.subtract(start.subtract(current).divideAndRemainder(start.subtract(end))[1]);
+                        default -> start; // REPEAT
                     };
                 }
             }

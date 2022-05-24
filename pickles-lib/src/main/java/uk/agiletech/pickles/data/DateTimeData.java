@@ -1,5 +1,9 @@
 package uk.agiletech.pickles.data;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.temporal.TemporalAmount;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static uk.agiletech.pickles.data.LimitBehavior.*;
@@ -9,15 +13,13 @@ import static uk.agiletech.pickles.data.LimitBehavior.*;
  * The sequence can go up or down or be skip around randomly
  * At the end of the sequence, can be null, the last value or loop to the start
  */
-public class IntegerData implements Data<Integer> {
+public class DateTimeData implements Data<LocalDateTime> {
 
-    private final int start;
-    private final int end;
-    private final int increment;
+    private final LocalDateTime start;
+    private final LocalDateTime end;
+    private final Duration increment;
     private final LimitBehavior limitBehavior;
-    private final int randomEnd;
-    private int current;
-    private boolean isnull;
+    private LocalDateTime current;
 
     /**
      * Create an IntegerGenerator with default limit behavior = LimitBehavior.NULL
@@ -26,7 +28,7 @@ public class IntegerData implements Data<Integer> {
      * @param end       end value
      * @param increment increment add (or subtracted if negative) to the current value
      */
-    public IntegerData(int start, int end, int increment) {
+    public DateTimeData(LocalDateTime start, LocalDateTime end, Duration increment) {
         this(start, end, increment, NULL);
     }
 
@@ -38,35 +40,35 @@ public class IntegerData implements Data<Integer> {
      * @param increment     increment
      * @param limitBehavior the value at the end of the sequence
      */
-    public IntegerData(int start, int end, int increment, LimitBehavior limitBehavior) {
+    public DateTimeData(LocalDateTime start, LocalDateTime end, Duration increment, LimitBehavior limitBehavior) {
         this.limitBehavior = limitBehavior;
-        if (!((start < end && increment > 0) || (start > end && increment < 0))) {
+        if (!((start.isBefore(end) && !increment.isNegative())
+                || (start.isAfter(end) && increment.isNegative()))) {
             throw new IllegalArgumentException("start must be before end for the given increment");
         }
         this.start = start;
         this.end = end;
-        this.randomEnd = (end == Integer.MAX_VALUE) ? end : end + 1;
         this.increment = increment;
         reset();
     }
 
     @Override
     public boolean endSequence() {
-        return isnull;
+        return current == null;
     }
 
     @Override
     public void next() {
         if (limitBehavior == LimitBehavior.RANDOM) {
-            current = randomInt();
-        } else if (!isnull) {
-            int next = current + increment;
-            if (positiveIncrement()) {
-                if (next > end) {
+            current = randomDateTime();
+        } else if (current != null) {
+            LocalDateTime next = current.plus(increment);
+            if (!increment.isNegative()) {
+                if (next.isAfter(end)) {
                     if (limitBehavior == NULL) {
-                        isnull = true;
+                        current = null;
                     } else if (limitBehavior == LOOP) {
-                        current = start + (next - end) - 1;
+                        current = start.plus(Duration.between(end,next));
                     } else if (limitBehavior == REPEAT) {
                         current = start;
                     }
@@ -74,11 +76,11 @@ public class IntegerData implements Data<Integer> {
                     current = next;
                 }
             } else {
-                if (next < end) {
+                if (next.isBefore(end)) {
                     if (limitBehavior == NULL) {
-                        isnull = true;
+                        current = null;
                     } else if (limitBehavior == LOOP) {
-                        current = start + (next - end) + 1;
+                        current = start.plus(Duration.between(next,end));
                     } else if (limitBehavior == REPEAT) {
                         current = start;
                     }
@@ -89,10 +91,13 @@ public class IntegerData implements Data<Integer> {
         }
     }
 
+    private LocalDateTime randomDateTime() {
+        return null;
+    }
+
     @Override
     public void reset() {
-        this.current = (limitBehavior == RANDOM) ? randomInt() : start;
-        this.isnull = false;
+        this.current = (limitBehavior == RANDOM) ? randomDateTime() : start;
     }
 
     @Override
@@ -100,20 +105,8 @@ public class IntegerData implements Data<Integer> {
         return limitBehavior == NULL;
     }
 
-    public int getIntValue() {
-        return current;
-    }
-
     @Override
-    public Integer getValue() {
-        return isnull ? null : current;
-    }
-
-    private boolean positiveIncrement() {
-        return increment > 0;
-    }
-
-    private int randomInt() {
-        return ThreadLocalRandom.current().nextInt(start, randomEnd);
+    public LocalDateTime getValue() {
+        return current;
     }
 }
