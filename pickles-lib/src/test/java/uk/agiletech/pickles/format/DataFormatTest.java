@@ -88,7 +88,7 @@ public class DataFormatTest {
             count++;
         }
         System.out.printf("DataFormat performance %,d per second%n",count);
-        assertThat(count,is(greaterThan(400000L)));
+        assertThat(count,is(greaterThan(200000L)));
     }
 
 
