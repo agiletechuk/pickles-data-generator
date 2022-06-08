@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 import static org.assertj.core.api.Assertions.assertThat;
 import static uk.agiletech.pickles.Context.getInstance;
 import static uk.agiletech.pickles.data.LimitBehavior.LOOP;
+import static uk.agiletech.pickles.data.LimitBehavior.RANDOM;
 
 public class Steps {
 
@@ -42,35 +43,41 @@ public class Steps {
     }
 
 
-    @Given("Value data {string} named {string}")
+    @Given("Value data {string} named {word}")
     public void valueDataNamed(String commaSepValues, String name) {
         List<String> values = StepHelper.splitValues(commaSepValues);
         ListValueData<String> data = new ListValueData<>(values, LOOP);
         getInstance().add(name, data);
     }
 
-    @Given("List data from {string} min {int} max {int} named {string}")
+    @Given("Randomly ordered value data {string} named {word}")
+    public void randomValueDataNamed(String commaSepValues, String name) {
+        List<String> values = StepHelper.splitValues(commaSepValues);
+        ListValueData<String> data = new ListValueData<>(values, RANDOM);
+        getInstance().add(name, data);
+    }
+
+    @Given("List data from {string} min {int} max {int} named {word}")
     public void listDataMinMaxNamed(String format, int min, int max, String name) {
         ListData data = new ListData(",", "[", "]",
                 (Data<?>) getInstance().getFormat(format), new RandomListSize(min, max));
         getInstance().add(name, data);
     }
 
-    @Then("format {string} value is like {string}")
+    @Then("format {word} value is like {string}")
     public void formatValueIsLike(String format, String regex) {
         String value = getInstance().getValue(format).toString();
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(value);
         assertThat(matcher.find()).isTrue();
-
     }
 
-    @And("display {string}")
+    @And("display {word}")
     public void display(String format) {
         getInstance().enableDisplay(format);
     }
 
-    @And("dont display {string}")
+    @And("dont display {word}")
     public void dontDisplay(String format) {
         getInstance().disableDisplay(format);
     }

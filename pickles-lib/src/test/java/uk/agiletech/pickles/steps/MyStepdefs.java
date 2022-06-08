@@ -12,7 +12,7 @@ public class MyStepdefs {
         assertThat(getInstance().getValue(name)).isSameAs(value);
     }
 
-    @Then("format {string} value is {string}")
+    @Then("format {word} value is {string}")
     public void expectedValue(String name, String value) {
         assertThat(getInstance().getValue(name)).isEqualTo(value);
     }
